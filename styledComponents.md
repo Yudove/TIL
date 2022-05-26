@@ -4,7 +4,9 @@
 
 일반적인 css 태그의 경우 
 ```
-<input style = {{fonst-size : "30px"}}>
+<div style = {{fonst-size : "30px"}}>
+
+</div>
 ```
 
 styled-Components의 경우
