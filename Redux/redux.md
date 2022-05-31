@@ -191,6 +191,7 @@ const CounterHome = () => {
 
 ### thunk 함수
 
+-------------------------------------------------------
 함수가 함수를 리턴할 수 있다.
 
 ```
@@ -203,4 +204,55 @@ const thunkFunc = () => (dispatch) => {  // 두번째 소괄호에서 dispatch�
 
         dispatch(plus());
 };
+```
+----------------------------------------------------------------------
+
+* 순수한 리덕스는 개발자가 dispatch를 실행하면 바로 실행이 된다. 근데 만약 thunk를 쓴다면 dispatch를 실행하고 reducer에 type이 전달되기 전 어떠한 동작을 할 수 있다.
+
+```
+export const __getTodos = () => async (dispatch, getState) => {
+    dispatch(getTodoRequest(true));
+    
+    try {
+        const dataFB = await (firebase 에서 값을 getDoc를 사용해 가져옴) // dispatch를 실행하기 전 firebase에서 db 값을 dataFB로 가져오고 난 후
+
+        dispatch(createCard(dataFB)); // dispatch를 실행
+    }
+}
+```
+
+### 상태관리
+
+서버 요청 과정에서 무조건 요청, 성공, 실패로 나누어 dispatch를 적용해야 한다.
+
+```
+const GET_TODOS_REQUEST = "todos/GET_TODOS_REQUEST";
+const GET_TODOS_SUCCESS = "todos/GET_TODOS_SUCCESS";
+const GET_TODOS_ERROR = "todos/GET_TODOS_ERROR";
+
+const initialState = {
+    todos : [],
+    loading: false,
+    error: null,
+}
+
+...
+
+export const __getTodos = () => async (dispatch, getState) => {
+    
+            // 서버 요청 시작 시, 로딩을 true로 변경
+    dispatch(getTodoRequest(true));
+            // 서버 요청 성공 시, 할 동작들을 구현
+    try {
+        const dataFB = await (firebase 에서 값을 getDoc를 사용해 가져옴) // dispatch를 실행하기 전 firebase에서 db 값을 dataFB로 가져오고 난 후
+            // 서버 요청 성공 시
+        dispatch(getTodoSuccess(dataFB)); // dispatch를 실행
+    } catch (error) {
+            // 서버 요청 실패 시
+        dispatch(getTodoError(error));
+    }finally {
+            // 모든 동작 끝났을 때
+        dispatch(getTodoRequest(false));
+    }
+}
 ```
