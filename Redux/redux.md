@@ -152,7 +152,7 @@ const CounterHome = () => {
 };
 ```
 
-동작 순서 : dispatch가 reducer로 actio type을 보내고 type 값에 맞는 case를 reducer가 실행한다. 
+동작 순서 : dispatch가 reducer로 action 함수의 type을 보내고 type 값에 맞는 case를 reducer가 실행한다. 
 
 * action type, action creator, reducer를 다 만들고 동작을 하기 위해선 dispatch부터 시작된다.
 
@@ -174,10 +174,33 @@ const CounterHome = () => {
 
 ## Redux thunk
 
+서버로부터 어떠한 동작 중간에 데이터를 가져오는 역할을 한다.
+
+또한 dispatch로 값을 불러오기 위해선 무조건 action type이라는 key를 가진 객체를 넣어주어야 하지만 thunk를 쓰게되면 함수를 입력해도 된다. (반환값이 객체인 함수 외에 반환값이 함수인 함수 입력 가능)
+
 ### middleware
 ----------------------------------------------------------------------------
 
- dispatch가 실행되고 reducer로 type이 전달되기 전에 어떠한 작업을 하기 위한 역할
+ dispatch가 실행되고 reducer로 action 함수의 type이 전달되기 전에 어떠한 작업을 하기 위한 역할
 
 ----------------------------------------------------------------------------
 
+- useEffect
+
+브라우저가 화면에 출력되었을 때 dispatch의 type이 실행되게 하는 thunk
+
+### thunk 함수
+
+함수가 함수를 리턴할 수 있다.
+
+```
+const thunkFunc = () => () => { }; // 소괄호가 두개여야 함!!
+
+----------------------------------------------------------------------------------------------
+
+const thunkFunc = () => (dispatch) => {  // 두번째 소괄호에서 dispatch라는 키워드를 꺼내올 수 있다.
+// 키워드를 꺼내는 이유는 dispatch가 reducer로 실행되기 전 추가하고 싶은 것을 실행할 수 있음.
+
+        dispatch(plus());
+};
+```
